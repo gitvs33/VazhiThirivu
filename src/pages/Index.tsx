@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { JournalHeader } from "@/components/JournalHeader";
 import { EntryList } from "@/components/EntryList";
+import { CategoryDialog } from "@/components/CategoryDialog";
 import { JournalEntryData } from "@/components/JournalEntry";
 import { loadEntriesFromPublic, searchEntries } from "@/utils/journalLoader";
 import { useToast } from "@/hooks/use-toast";
@@ -10,7 +11,14 @@ const Index = () => {
   const [entries, setEntries] = useState<JournalEntryData[]>([]);
   const [filteredEntries, setFilteredEntries] = useState<JournalEntryData[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
   const { toast } = useToast();
+
+  // Extract unique categories (folder names) from entries
+  const categories = useMemo(() => {
+    return [...new Set(entries.map(entry => entry.subject))].filter(Boolean).sort();
+  }, [entries]);
 
   useEffect(() => {
     loadEntriesFromPublic().then((loadedEntries) => {
@@ -20,15 +28,22 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
-    const results = searchEntries(entries, searchQuery);
+    let results = searchEntries(entries, searchQuery);
+    
+    // Apply category filter
+    if (selectedCategory) {
+      results = results.filter(entry => entry.subject === selectedCategory);
+    }
+    
     setFilteredEntries(results);
-  }, [searchQuery, entries]);
+  }, [searchQuery, entries, selectedCategory]);
 
   const handleCategoryClick = () => {
-    toast({
-      title: "Categories",
-      description: "Filter by: " + [...new Set(entries.map(e => e.subject))].join(", "),
-    });
+    setCategoryDialogOpen(true);
+  };
+
+  const handleCategorySelect = (category: string | null) => {
+    setSelectedCategory(category);
   };
 
   const handleEntryClick = (entry: JournalEntryData) => {
@@ -55,6 +70,14 @@ const Index = () => {
           onCategoryClick={handleCategoryClick}
         />
         <EntryList entries={filteredEntries} onEntryClick={handleEntryClick} />
+        
+        <CategoryDialog
+          open={categoryDialogOpen}
+          onOpenChange={setCategoryDialogOpen}
+          categories={categories}
+          onCategorySelect={handleCategorySelect}
+          selectedCategory={selectedCategory}
+        />
       </div>
     </div>
   );
