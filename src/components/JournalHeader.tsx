@@ -1,13 +1,14 @@
-import { Search, User, Menu } from "lucide-react";
+import { Search, User, Menu, Filter } from "lucide-react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 
 interface JournalHeaderProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
+  onCategoryClick: () => void;
 }
 
-export const JournalHeader = ({ searchQuery, onSearchChange }: JournalHeaderProps) => {
+export const JournalHeader = ({ searchQuery, onSearchChange, onCategoryClick }: JournalHeaderProps) => {
   return (
     <header className="w-full max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <h1 className="text-4xl sm:text-5xl font-serif text-center mb-8 text-foreground">
@@ -27,15 +28,25 @@ export const JournalHeader = ({ searchQuery, onSearchChange }: JournalHeaderProp
           </div>
         </div>
         
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-          <Input
-            type="text"
-            placeholder="Search entries..."
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-10 bg-background border-border rounded-xl"
-          />
+        <div className="flex gap-3">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Search entries..."
+              value={searchQuery}
+              onChange={(e) => onSearchChange(e.target.value)}
+              className="pl-10 bg-background border-border rounded-xl"
+            />
+          </div>
+          <Button
+            onClick={onCategoryClick}
+            variant="outline"
+            className="rounded-xl px-4 border-border hover:bg-accent"
+          >
+            <Filter className="h-5 w-5 mr-2" />
+            <span className="hidden sm:inline">Categories</span>
+          </Button>
         </div>
       </div>
     </header>

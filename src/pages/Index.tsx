@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { JournalHeader } from "@/components/JournalHeader";
-import { NewEntryButton } from "@/components/NewEntryButton";
 import { EntryList } from "@/components/EntryList";
 import { JournalEntryData } from "@/components/JournalEntry";
 import { loadEntriesFromPublic, searchEntries } from "@/utils/journalLoader";
 import { useToast } from "@/hooks/use-toast";
+import journalBg from "@/assets/journal-bg.jpg";
 
 const Index = () => {
   const [entries, setEntries] = useState<JournalEntryData[]>([]);
@@ -24,10 +24,10 @@ const Index = () => {
     setFilteredEntries(results);
   }, [searchQuery, entries]);
 
-  const handleNewEntry = () => {
+  const handleCategoryClick = () => {
     toast({
-      title: "Create New Entry",
-      description: "To add entries, create folders in public/subjects/ and add .txt or .png files",
+      title: "Categories",
+      description: "Filter by: " + [...new Set(entries.map(e => e.subject))].join(", "),
     });
   };
 
@@ -39,10 +39,23 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <JournalHeader searchQuery={searchQuery} onSearchChange={setSearchQuery} />
-      <NewEntryButton onClick={handleNewEntry} />
-      <EntryList entries={filteredEntries} onEntryClick={handleEntryClick} />
+    <div 
+      className="min-h-screen bg-background relative"
+      style={{
+        backgroundImage: `url(${journalBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+      }}
+    >
+      <div className="min-h-screen backdrop-blur-[1px]">
+        <JournalHeader 
+          searchQuery={searchQuery} 
+          onSearchChange={setSearchQuery}
+          onCategoryClick={handleCategoryClick}
+        />
+        <EntryList entries={filteredEntries} onEntryClick={handleEntryClick} />
+      </div>
     </div>
   );
 };
