@@ -2,10 +2,12 @@ import { useState, useEffect, useMemo } from "react";
 import { JournalHeader } from "@/components/JournalHeader";
 import { EntryList } from "@/components/EntryList";
 import { CategoryDialog } from "@/components/CategoryDialog";
+import { EntryDialog } from "@/components/EntryDialog";
 import { JournalEntryData } from "@/components/JournalEntry";
 import { loadEntriesFromPublic, searchEntries } from "@/utils/journalLoader";
-import { useToast } from "@/hooks/use-toast";
-import journalBg from "@/assets/journal-bg.jpg";
+// 📁 Put your background image in: src/assets/background.jpg
+// Then change the import below to match your image filename
+import backgroundImage from "@/assets/background.jpg";
 
 const Index = () => {
   const [entries, setEntries] = useState<JournalEntryData[]>([]);
@@ -13,7 +15,8 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
-  const { toast } = useToast();
+  const [selectedEntry, setSelectedEntry] = useState<JournalEntryData | null>(null);
+  const [entryDialogOpen, setEntryDialogOpen] = useState(false);
 
   // Extract unique categories (folder names) from entries
   const categories = useMemo(() => {
@@ -47,17 +50,15 @@ const Index = () => {
   };
 
   const handleEntryClick = (entry: JournalEntryData) => {
-    toast({
-      title: entry.title,
-      description: entry.content || entry.preview,
-    });
+    setSelectedEntry(entry);
+    setEntryDialogOpen(true);
   };
 
   return (
     <div 
       className="min-h-screen bg-background relative"
       style={{
-        backgroundImage: `url(${journalBg})`,
+        backgroundImage: `url(${backgroundImage})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
@@ -77,6 +78,12 @@ const Index = () => {
           categories={categories}
           onCategorySelect={handleCategorySelect}
           selectedCategory={selectedCategory}
+        />
+        
+        <EntryDialog
+          entry={selectedEntry}
+          open={entryDialogOpen}
+          onOpenChange={setEntryDialogOpen}
         />
       </div>
     </div>
