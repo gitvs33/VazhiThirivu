@@ -23,8 +23,8 @@ export const JournalHeader = ({ searchQuery, onSearchChange, onCategoryClick }: 
   return (
     <header className="w-full max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <div className="flex items-center justify-center gap-4 mb-8">
-        <h1 className="text-4xl sm:text-5xl font-serif text-foreground">
-          My Journal
+        <h1 className="text-4xl sm:text-5xl font-momo text-foreground">
+          "Vazhi Thirivu"
         </h1>
         <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden border-2 border-border bg-card shadow-sm flex-shrink-0 relative">
           <video

@@ -61,6 +61,7 @@ export default {
       fontFamily: {
         serif: ["Playfair Display", "Georgia", "serif"],
         sans: ["Inter", "system-ui", "sans-serif"],
+        momo: ['Momo', 'cursive']
       },
       borderRadius: {
         lg: "var(--radius)",
